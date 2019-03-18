@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -105,10 +106,15 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }));
   }
-// ========================================= LOAD DATA RESTFUL API=========================================
+// =================== LOAD DATA RESTFUL API ===================
   void _onTapPlayVideo() {
     Navigator.of(context).push(new MaterialPageRoute(
         builder: (context) => new PlayVideo(linkVideo: dataModel.linkintro)));
+  }
+
+// =================== DETECT PLATFORM ANDROID / IOS ===================
+  String _getTextPlatform() {
+    return Platform.isAndroid == true ? "ANDROID" : "IOS";
   }
 
   @override
@@ -170,6 +176,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: () {
                             _onTapPlayVideo();
                           },
+                        ),
+                        Container(
+                            padding: EdgeInsets.symmetric(vertical: 10.0),
+                            child: Text(
+                                "Platform Device: " + this._getTextPlatform(),
+                                style: styleData)
                         ),
                       ],
                     ),
