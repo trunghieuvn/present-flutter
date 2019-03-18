@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:present_flutter/Config.dart';
 import 'package:present_flutter/model_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:present_flutter/screens/play_video.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,22 +15,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 // ====================== Define Style ======================
-TextStyle styleTitle = TextStyle(
-  color: Colors.black, 
-  fontWeight: FontWeight.bold, 
-  fontSize: 20.0
-);
+TextStyle styleTitle =
+    TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20.0);
 
-TextStyle styleData = TextStyle(
-  color: Colors.black, 
-  fontSize: 16.0
-);
+TextStyle styleData = TextStyle(color: Colors.black, fontSize: 16.0);
 
-TextStyle txtBtn = TextStyle(
-    color: Colors.white, 
-    fontSize: 16.0, 
-    fontWeight: FontWeight.bold
-);
+TextStyle txtBtn =
+    TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold);
 
 class _HomeScreenState extends State<HomeScreen> {
   // //========================================= LIFE CYCLE //=========================================
@@ -41,7 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
       _getData();
     });
   }
- @override
+
+  @override
   void dispose() {
     // Huỷ lắng nghe khi không cần thiết nữa
     subscription.cancel();
@@ -112,7 +105,12 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }));
   }
- 
+// ========================================= LOAD DATA RESTFUL API=========================================
+  void _onTapPlayVideo() {
+    Navigator.of(context).push(new MaterialPageRoute(
+        builder: (context) => new PlayVideo(linkVideo: dataModel.linkintro)));
+  }
+
   @override
   Widget build(BuildContext context) {
     Dimension.height = MediaQuery.of(context).size.height;
@@ -132,39 +130,50 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
               "DATA API ",
               style: styleTitle,
-            )), 
-            dataModel == null 
-            ? Text("ERROR LOAD DATA")
-            : Container(
-                child: Column(
-                  children: <Widget>[
-                    Text("Age: " + dataModel.age.toString(),
-                        style: styleData),
-                    Container(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
-                          "Name: " + dataModel.name,
-                          style: styleData)
+            )),
+            dataModel == null
+                ? Text("ERROR LOAD DATA")
+                : Container(
+                    child: Column(
+                      children: <Widget>[
+                        Text("Age: " + dataModel.age.toString(),
+                            style: styleData),
+                        Container(
+                            padding: EdgeInsets.symmetric(vertical: 10.0),
+                            child: Text("Name: " + dataModel.name,
+                                style: styleData)),
+                        Container(
+                            padding: EdgeInsets.symmetric(vertical: 10.0),
+                            child: Text("Platfrom: " + dataModel.platfrom,
+                                style: styleData)),
+                        Container(
+                          height: Dimension.getWidth(0.25),
+                          width: Dimension.getWidth(0.25),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.red),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: CachedNetworkImageProvider(
+                                    dataModel.urlImg),
+                              )),
+                        ),
+                        InkWell(
+                          child: Container(
+                            padding: EdgeInsets.all(10.0),
+                            margin: EdgeInsets.symmetric(vertical: 10.0),
+                            color: Colors.red,
+                            child: Text(
+                              "Play video",
+                              style: txtBtn,
+                            ),
+                          ),
+                          onTap: () {
+                            _onTapPlayVideo();
+                          },
+                        ),
+                      ],
                     ),
-                    Container(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text("Platfrom: " + dataModel.platfrom,
-                            style: styleData)),
-                    Container(
-                      height: Dimension.getWidth(0.25),
-                      width: Dimension.getWidth(0.25),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.red),
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(
-                                dataModel.urlImg),
-                          )),
-                    )
-                  ],
-                ),
-              ),
-               
+                  ),
           ],
         ),
       ),
