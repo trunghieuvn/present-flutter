@@ -112,12 +112,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }));
   }
-
-// ==== 
-_onTapPlayVideo() {
-  print("PLAY VIDEO");
-
-}
  
   @override
   Widget build(BuildContext context) {
