@@ -9,6 +9,7 @@ import 'package:present_flutter/Config.dart';
 import 'package:present_flutter/model_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:present_flutter/screens/play_video.dart';
+import 'package:present_flutter/webview.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -117,6 +118,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return Platform.isAndroid == true ? "ANDROID" : "IOS";
   }
 
+// =================== Load Game HTML5 for WebView ===================
+  void onTapHtml5() { 
+    Navigator.of(context).push(
+      new MaterialPageRoute(
+          builder: (context) =>
+              new WebViewClient(
+                  linkHTML:
+                      dataModel.urlHTML5)));
+  }
   @override
   Widget build(BuildContext context) {
     Dimension.height = MediaQuery.of(context).size.height;
@@ -183,6 +193,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                 "Platform Device: " + this._getTextPlatform(),
                                 style: styleData)
                         ),
+                         Platform.isIOS == true
+                          ? InkWell(
+                              child: Container(
+                                padding: EdgeInsets.all(10.0),
+                                margin:
+                                    EdgeInsets.symmetric(vertical: 10.0),
+                                color: Colors.red,
+                                child: Text(
+                                  "Open HTML 5",
+                                  style: txtBtn,
+                                ),
+                              ),
+                              onTap  :() => onTapHtml5()
+                            )
+                           :  Container()
                       ],
                     ),
                   ),
