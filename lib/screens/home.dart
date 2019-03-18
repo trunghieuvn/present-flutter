@@ -4,12 +4,14 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:present_flutter/Config.dart';
 import 'package:present_flutter/model_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:present_flutter/screens/play_video.dart';
 import 'package:present_flutter/webview.dart';
+import 'package:launch_review/launch_review.dart'; 
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -22,7 +24,7 @@ TextStyle styleTitle =
 
 TextStyle styleData = TextStyle(color: Colors.black, fontSize: 16.0);
 
-TextStyle txtBtn =
+TextStyle styleButton =
     TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold);
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -127,6 +129,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   linkHTML:
                       dataModel.urlHTML5)));
   }
+
+// =================== Check APK for Android ===================
+  static const platform = const MethodChannel('flutter.native/helper');
+  String _responseFromNativeCode = 'Waiting for Response...';
+
+  Future<void> responseFromNativeCode() async {
+    String response = "";
+    try {
+      final String result = await platform.invokeMethod('helloFromNativeCode');
+      response = result;
+    } on PlatformException catch (e) {
+      response = "Failed to Invoke: '${e.message}'.";
+    }
+    setState(() {
+      _responseFromNativeCode = response;
+    });
+  }
+  void _onTapApk() {
+    responseFromNativeCode().then(( onValue){
+      if(_responseFromNativeCode == "NO") {
+        LaunchReview.launch(androidAppId: "com.gameloft.android.ANMP.GloftNJHM",
+          iOSAppId: "id840146800");
+      }
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     Dimension.height = MediaQuery.of(context).size.height;
@@ -180,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.red,
                             child: Text(
                               "Play video",
-                              style: txtBtn,
+                              style: styleButton,
                             ),
                           ),
                           onTap: () {
@@ -193,8 +222,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 "Platform Device: " + this._getTextPlatform(),
                                 style: styleData)
                         ),
-                         Platform.isIOS == true
-                          ? InkWell(
+                        Platform.isIOS == true
+                        ? InkWell(
                               child: Container(
                                 padding: EdgeInsets.all(10.0),
                                 margin:
@@ -202,12 +231,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Colors.red,
                                 child: Text(
                                   "Open HTML 5",
-                                  style: txtBtn,
+                                  style: styleButton,
                                 ),
                               ),
                               onTap  :() => onTapHtml5()
                             )
-                           :  Container()
+                           : InkWell(
+                              child: Container(
+                                padding: EdgeInsets.all(10.0),
+                                margin:
+                                    EdgeInsets.symmetric(vertical: 10.0),
+                                color: Colors.red,
+                                child: Text(
+                                  "Open APK",
+                                  style: styleButton,
+                                ),
+                              ),
+                              onTap  :() => _onTapApk()
+                            )
                       ],
                     ),
                   ),
